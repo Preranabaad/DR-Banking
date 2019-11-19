@@ -1,0 +1,113 @@
+BRANCH:
+create table dr_branch(branch_ifsc varchar2(25) primary KEY ,branch_city varchar2(30) NOT NULL); 
+desc branch;
+
+insert into dr_branch values('DRPO0400012','Powai');
+insert into dr_branch values('DRAN0400016','Andheri');
+insert into dr_branch values('DRJU0400021','Juhu');
+insert into dr_branch values('DRCH0400056','Chembur');
+
+SELECT *FROM dr_BRANCH
+---------------------------------------------------------------------------------
+BANKER INFO:
+
+create table dr_banker_info(
+banker_name varchar2(30) NOT NULL,
+banker_email varchar2(20) primary key,
+banker_password varchar2(10) NOT NULL,
+banker_ifsc varchar2(15),
+Foreign key (banker_ifsc) references dr_branch(branch_IFSC)
+);
+
+insert into dr_banker_info values('Anil Sharma','anilsharma@drbank.com','drbank@123','DRPO0400012');
+insert into dr_banker_info values('Aniteja Satwant','anitejasatwant@drbank.com','drbank@123','DRPO0400012');
+insert into dr_banker_info values('Balaaditya Gajraj','balaadityagajraj@drbank.com','drbank@123','DRAN0400016');
+insert into dr_banker_info values('Chaman Saraa','chamansaraa@drbank.com','drbank@123','DRAN0400016');
+insert into dr_banker_info values('Kanchan Vilok','kanchanvilok@drbank.com','drbank@123','DRJU0400021');
+insert into dr_banker_info values('Ajitabh Maya','ajitabhmaya@drbank.com','drbank@123','DRJU0400021');
+insert into dr_banker_info values('Sevak Sathianarayan','sevaksathianarayan@drbank.com','drbank@123','DRCH0400056');
+insert into dr_banker_info values('Anbu Paritosh','anbuparitosh@drbank.com','drbank@123','DRCH0400056');
+
+select * from dr_banker_info,branch
+where banker_info.BANKER_IFSC=branch.BRANCH_IFSC
+
+----------------------------------------------------------------------------------
+CUSTOMER: 
+
+Create table dr_customers(
+customer_id NUMBER(12) PRIMARY KEY, 
+firstname VARCHAR2(25) NOT NULL,
+lastname VARCHAR2(25) NOT NULL,
+middlename VARCHAR2(25),
+email VARCHAR2(25) NOT NULL,
+dateofbirth VARCHAR2(10) NOT NULL,
+mobile NUMBER(10) NOT NULL ,
+gender VARCHAR2(4) NOT NULL,
+permanent_address VARCHAR2(50) NOT NULL,
+corresponding_address VARCHAR2(50) NOT NULL,
+aadhar_no VARCHAR2(12) NOT NULL,
+acc_type VARCHAR2(10) NOT NULL,
+ifsc varchar2(15) NOT NULL,
+photo_path varchar2(25),
+aadhar_path varchar2(25),
+status VARCHAR(7),
+reason VARCHAR2(50),
+FOREIGN KEY (ifsc) REFERENCES dr_branch(BRANCH_IFSC)
+);
+-----------------------------------------------------------------------------------
+Internet Banking
+create table dr_internet_banking(
+username varchar2(20) primary Key,
+customer_id NUMBER(12),
+password varchar2(10) NOT NULL,
+pin NUMBER(6) NOT NULL,
+lock_status number(1) DEFAULT 0,
+FOREIGN KEY (customer_id) REFERENCES dr_customers(customer_id));
+
+
+desc dr_internet_banking;
+---------------------------------------------------------------------------------------
+Beneficiary
+
+create table dr_beneficiary (
+beneficiary_id number(12) PRIMARY key,
+Beneficiary_ifsc varchar(15) NOT NULL,
+beneficiary_acc_no number(12) NOT NULL,
+beneficiary_name Varchar2(20) NOT NULL,
+nick_name VARCHAR2(10) NOT NULL,
+amount number(10),
+Customer_id number(12),
+FOREIGN KEY (customer_id) REFERENCES dr_customers(customer_id));
+----------------------------------------------------------------------------------------
+Account Details
+
+create table dr_account_details(
+acc_no number(12) PRIMARY key,
+acc_type varchar(7) NOT NULL,
+ifsc VARCHAR2(20) NOT NULL,
+balance number(10) NOT NULL,
+customer_id number(12),
+acc_status number(1) NOT NULL,
+dateofcreation varchar2(10) NOT NULL,
+FOREIGN KEY (customer_id) REFERENCES dr_customers(customer_id)
+);
+-----------------------------------------------------------------------------------------
+Transaction
+
+create table dr_transaction (
+transaction_id number(20) primary key,
+transaction_status number(1) NOT NULL,
+acc_no number(12) NOT NULL,
+amount number(10) NOT NULL,
+transaction_type varchar2(10) NOT NULL,
+Beneficiary_acc_no number(12) NOT NULL,
+transaction_date DATE NOT NULL,
+remarks varchar2(30) ,
+Foreign key (acc_no) references dr_account_details(acc_no)
+);
+-------------------------------------------------------------------------------------------
+Sequences:
+
+CREATE SEQUENCE dr_customerid_seq
+START WITH 100
+INCREMENT BY 1 ;
